@@ -2,7 +2,7 @@ import requests
 
 def make_requests(method ,url ,token=None ,data=None):
     headers = {
-        "Accept" : "Application/json"
+        "Accept" : "Application/vnd.github+json"
 }
 
     if token:
