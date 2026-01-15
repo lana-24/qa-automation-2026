@@ -24,7 +24,8 @@ def print_github_profile(response):
     
 '''Positive case'''
 def test_user_authenticated(): # get user with authenticated
-    responses = make_requests('GET',settings.URL ,settings.GITHUB_TOKEN)
+    url = f'{settings.URL}/user'
+    responses = make_requests('GET',url ,settings.GITHUB_TOKEN)
     
     response = responses.json()
     print(f"status code : {responses.status_code}")
@@ -33,7 +34,7 @@ def test_user_authenticated(): # get user with authenticated
         return True
     
 def test_valid_users(): # get spesific user without token 
-    responses = make_requests('get',f'{settings.URL}s/lana-24')
+    responses = make_requests('get',f'{settings.URL}/users/lana-24')
     response = responses.json()
     print(f"status code : {responses.status_code}")
     if responses.status_code == 200:
@@ -43,16 +44,22 @@ def test_valid_users(): # get spesific user without token
 def test_invalid_token():
     token = f"Bearer {settings.GITHUB_TOKEN}salah",
 
-    responses = make_requests('get',settings.URL , token)
+    responses = make_requests('get',f'{settings.URL}' , token)
     response = responses.json()
     print(f"status code : {responses.status_code}")
     print(response, "\n")
 
 def test_invalid_users():
-    url_users = f'{settings.URL}s/lana-871'
+    url_users = f'{settings.URL}/users/lana-871'
     responses = make_requests("get", url_users)
     response = responses.json()
     if responses.status_code == 404:
         print(f'url : {url_users} tidak di termukan ')
     print(f"status code : {responses.status_code}")
     print(f'body : {response}')
+
+def run_all():
+    test_user_authenticated()
+    test_valid_users()
+    test_invalid_token()
+    test_invalid_users()
