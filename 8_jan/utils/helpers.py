@@ -23,19 +23,19 @@ def make_requests(method ,url ,token=None ,data=None):
             return response
             
     elif method.upper() == 'POST':
-        response = requests.post(url ,headers=headers ,data=data)
+        response = requests.post(url ,headers=headers ,json=data)
         if isinstance(response.json(), dict):
             return response
         else:
             print("response is'nt dict")
     elif method.upper() == 'PUT' :
-        response = requests.put(url, headers=headers ,data=data)
+        response = requests.put(url, headers=headers ,json=data)
         if isinstance(response.json(), dict):
             return response
         else:
             print("response is'nt dict")
     elif method.upper() == 'PATCH':
-        response = requests.patch(url, headers=headers ,data=data)
+        response = requests.patch(url, headers=headers ,json=data)
         if isinstance(response.json(), dict):
             return response
         else:
