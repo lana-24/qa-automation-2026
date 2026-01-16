@@ -1,14 +1,26 @@
 import requests
 
-def make_requests(method ,url ,token=None ,data=None):
+def make_requests(method ,url ,token=None ,data=None ,params=None):
     headers = {
         "Accept" : "Application/vnd.github+json"
 }
 
     if token:
         headers["Authorization"] = f'Bearer {token}'
+        
+    if params:
+        response = requests.get(url ,headers=headers ,params=params)
+        if response.status_code == 200:
+            data = response.json()
+            if isinstance(data, dict):
+                return response
+            else:
+                print(f"response is'nt dict : {type(data)}")
+                return response
+        else:
+            print(f'failed {response.status_code}')
+            return response
 
-    
     if method.upper() == 'GET':
         response = requests.get(url ,headers=headers)
         if response.status_code == 200:
