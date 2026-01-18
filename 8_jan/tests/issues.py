@@ -1,29 +1,47 @@
 import requests
 from configs.settings import GITHUB_TOKEN , URL
 from utils.helpers import make_requests
+import jsonschema
+from jsonschema import validate
+
 
 base_url = URL
 token = GITHUB_TOKEN
 
+def validate_json(json):
+    schema = {
+        "type" : "object",
+        "properties" : {
+            "id" : {"type" : "integer"},
+            "number" : {"type" : "integer"},
+            "state" : {"type" : "string"},
+            "body" : {"type" : ["string","null"]},
+            "login" : {"type" : "string"}
+        },
+        "requeired" : ["id", "number"]
+}
+    try:
+        if isinstance(json , dict):
+            validate(instance=json , schema=schema)
+            print("json is valid")
+            print_response_body(json)
+        if isinstance(json , list):
+            json1 = json[0]
+            validate(instance=json1 ,schema =schema)
+            print("json is valid")
+            print_response_body(json1)
+        else:
+            print("not dict or list")
+    except jsonschema.exceptions.ValidationError as e:
+        print(f'validation error : \n {e}')
+            
 def print_response_body(data):
-    if isinstance(data , dict):
-        print('=' * 20 ,'RESPONSE BODY','='*20,'\n')
-        print(f'id : {data['id']}')
-        print(f'number : {data['number']}')
-        print(f'state : {data['state']}')
-        print(f'body : {data['body']}')
-        print(f'login : {data['user']['login']}')
-    elif isinstance(data , list):
-        data1 = data[0]
-        print('=' * 20 ,'RESPONSE BODY','='*20,'\n')
-        print(f'id : {data1['id']}')
-        print(f'number : {data1['number']}')
-        print(f'state : {data1['state']}')
-        print(f'body : {data1['body']}')
-        print(f'user : {data1['user']['login']}')
-
-    else:
-        print('type is not dict or list')
+    print('=' * 20 ,'RESPONSE BODY','='*20,'\n')
+    print(f'id : {data['id']}')
+    print(f'number : {data['number']}')
+    print(f'state : {data['state']}')
+    print(f'body : {data['body']}')
+    print(f'login : {data['user']['login']}')
         
 def test_get_issues():
     '''
@@ -44,7 +62,7 @@ def test_get_issues():
         response = make_requests('get', url )
         if response.status_code == 200:
             data = response.json()
-            print_response_body(data)
+            validate_json(data)
         else:
             print(f'ada kesalahan : {response.status_code}')
     except Exception as e:
@@ -69,7 +87,7 @@ def test_get_issues_number():
         response = make_requests('get', url )
         if response.status_code == 200:
             data = response.json()
-            print_response_body(data)
+            validate_json(data)
         else:
             print(f'ada kesalahan : {response.status_code}')
     except Exception as e:
@@ -100,7 +118,7 @@ def test_post_issues():
         response = make_requests('post', url , token , json )
         if response.status_code == 201:
             data = response.json()
-            print_response_body(data)
+            validate_json(data)
         else:
             print(f'ada kesalahan : {response.status_code}')
             print(f'response : {response.json()}')
@@ -121,7 +139,7 @@ def test_patch_issues_number():
     - response body field 'body'
     - response body field 'user[login]'
     '''
-    url = f'{base_url}repos/lana-24/test-bikin-repository/issues/3'
+    url = f'{base_url}repos/lana-24/test-bikin-repository/issues/7' #gile harus di sesuaikan
     json = {
         "title" : "aku coba ubah issues dari requests",
         "body" : "apakah berhasil ? yeyy berhasil ",
@@ -129,10 +147,10 @@ def test_patch_issues_number():
         "labels" : ["bug"]
 }
     try:
-        response = make_requests('patch', url , token , json )
+        response = make_requests('patch', url , token , data=json )
         if response.status_code == 200:
             data = response.json()
-            print_response_body(data)
+            validate_json(data)
         else:
             print(f'ada kesalahan : {response.status_code}')
             print(f'response : {response.json()}')
@@ -142,5 +160,5 @@ def test_patch_issues_number():
 def run_all():
     test_get_issues()
     test_get_issues_number()
-    test_post_issues()
+    #test_post_issues() # stop kalau tidak ingin post lagi
     test_patch_issues_number()

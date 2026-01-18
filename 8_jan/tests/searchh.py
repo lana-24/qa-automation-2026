@@ -1,9 +1,25 @@
 import requests
 from configs.settings import GITHUB_TOKEN ,URL
 from utils.helpers import make_requests
+import jsonschema
+from jsonschema import validate
 
 base_url = URL
 token = GITHUB_TOKEN
+
+def json_validation(json):
+    schema = {
+        "type" : "object",
+        "properties" : {"total_count" : {"type" : "integer"},
+                        "incomplete_results" : {"type" : "boolean"}},
+        "required" : ["total_count"]
+}
+    try:
+        validate(instance=json , schema=schema)
+        print("json is valid")
+        print_response_body(json)
+    except jsonschema.exceptions.ValidationError as e:
+        print(f'error validation : \n {e}')
 
 def print_response_body(data):
     print('='*20,'response body','='*20)
@@ -28,7 +44,7 @@ def test_search_repo():
         response = make_requests('get',url ,params=params)
         if response.status_code == 200:
             data = response.json()
-            print_response_body(data)
+            json_validation(data)
         else:
             print(f'ada kesalahan {response.status_code }')
     except Exception as e:
@@ -52,7 +68,7 @@ def test_search_issues():
         response = make_requests('get',url ,params=params)
         if response.status_code == 200:
             data = response.json()
-            print_response_body(data)
+            json_validation(data)
         else:
             print(f'ada kesalahan {response.status_code }')
     except Exception as e:
@@ -70,13 +86,14 @@ def test_search_code():
     '''
     url = f'{base_url}search/code'
     params = {
-        "q" : "try+except+requests+in:file"
+        "q" : "try+except+requests"
 }
     try:
         response = make_requests('get',url ,token=token,params=params)
         if response.status_code == 200:
             data = response.json()
-            print_response_body(data)
+            print(f'status code : {response.status_code}')
+            json_validation(data)
         else:
             print(f'ada kesalahan {response.status_code }')
     except Exception as e:

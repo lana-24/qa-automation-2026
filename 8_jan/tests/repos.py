@@ -1,9 +1,41 @@
 from configs.settings import GITHUB_TOKEN, URL
 from utils.helpers import make_requests
+import jsonschema
+from jsonschema import validate
 
 base_url = URL
 token = GITHUB_TOKEN
 
+def validate_json(json):
+    schema= {
+        "type" : "object",
+        "properties" : {
+            "id" : {"type " : "integer"},
+            "fullname" : {"type " : "string"},
+            "name" : {"type " : "string"}
+        },
+        "required" : ["id"]
+}
+    try:
+        validate(instance=json ,schema=schema)
+        print("json is valid")
+        print_response_body(json)
+    except jsonschema.exceptions.ValidationError as e:
+        print(f"gagal validasi :  {e}")
+
+def print_response_body(json):
+    if isinstance(json , dict):
+        print('response : ')
+        print('id :',json['id'])
+        print('full name :',json['full_name'])
+        print('name :',json['name'])
+    elif isinstance(json , list):
+        json1 = json[0]
+        print('response : ')
+        print('id :',json1['id'])
+        print('full name :',json1['full_name'])
+        print('name :',json1['name'])
+        
 def test_get_owner_repos():
     '''
     TC-RP-01 : GET OWNER REPOS
@@ -20,11 +52,9 @@ def test_get_owner_repos():
         if response.status_code == 200:
             print(f'response status : {response.status_code}')
             data = response.json()
-            print('response : ')
-            print('id :',data['id'])
-            print('full name :',data['full_name'])
-            print('name :',data['name'])
+            validate_json(data)
         else:
+            print(f'response status : {response.status_code} | expect 200')
             print('response :\n',response.json(),'\n')
     except Exception as e:
         print(f'ada kesalahan \n{e}\n')
@@ -47,10 +77,10 @@ def test_get_repos_contents():
             data = response.json()
             data1 = data[0]
             print('response : ')
-            print(data1['type'])
-            print(data1['path'])
-            print(data1['name'])
-            print(data1['size'])
+            print(f'type : {data1['type']}')
+            print(f'path : {data1['path']}')
+            print(f'name : {data1['name']}')
+            print(f'size : {data1['size']}')
         else:
             print(f'response status : {response.status_code} | expect 200\n ')
             print(type(response))
@@ -71,16 +101,14 @@ def test_get_users_repos():
     try:
         print(f"===== make requests {url} =====\n ")
         response = make_requests('get', url )
-        print(f'response status : {response.status_code}')
         if response.status_code == 200:
+            print(f'response status : {response.status_code}')
             data = response.json()
             data1 = data[0]
-            print('response : ')
-            print('id',data1['id'])
-            print('full name',data1['full_name'])
-            print('name : ',data1['name'])
+            validate_json(data1)
         else:
             print(f'response status : {response.status_code} | expect 200\n ')
+            print('response :\n',response.json  ,'\n')
     except Exception as e:
         print(f'ada kesalahan {e}\n')
 
@@ -96,16 +124,14 @@ def test_get_list_repos():
     try:
         print(f"===== make requests {url} =====\n ")
         response = make_requests('get', url )
-        print(f'response status : {response.status_code}')
         if response.status_code == 200:
+            print(f'response status : {response.status_code}')
             data = response.json()
             data1= data[0]
-            print('response : ')
-            print('id :',data1['id'])
-            print('full name :',data1['full_name'])
-            print('data :',data1['name'])
+            validate_json(data1)
         else:
             print(f'response status : {response.status_code} | expect 200\n ')
+            print('response :\n',response.json(),'\n')
     except Exception as e:
         print(f'ada kesalahan {e}\n')
         #print(f'response : /n{response.json()}')
