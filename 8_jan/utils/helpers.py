@@ -9,54 +9,88 @@ def make_requests(method ,url ,token=None ,data=None ,params=None):
         headers["Authorization"] = f'Bearer {token}'
         
     if params:
-        response = requests.get(url ,headers=headers ,params=params)
-        if response.status_code == 200:
-            data = response.json()
-            if isinstance(data, dict):
-                return response
+        try:
+            response = requests.get(url ,headers=headers ,params=params,timeout=(3,10))
+            if response.status_code == 200:
+                data = response.json()
+                if isinstance(data, dict):
+                    return response
+                else:
+                    print(f"response is'nt dict : {type(data)}")
+                    return response
             else:
-                print(f"response is'nt dict : {type(data)}")
+                print(f'failed {response.status_code}')
                 return response
-        else:
-            print(f'failed {response.status_code}')
-            return response
+        except requests.exceptions.Timeout:
+            print("Timeout ,check your connection!!")
+        except reqeusts.exceptions.ConnectionError:
+            print("connection error!!")
 
     if method.upper() == 'GET':
-        response = requests.get(url ,headers=headers)
-        if response.status_code == 200:
-            data = response.json()
-            if isinstance(data, dict):
-                return response
+        try:
+            response = requests.get(url ,headers=headers,timeout=(3,10))
+            if response.status_code == 200:
+                data = response.json()
+                if isinstance(data, dict):
+                    return response
+                else:
+                    print(f"response is'nt dict : {type(data)}")
+                    return response
             else:
-                print(f"response is'nt dict : {type(data)}")
+                print(f'failed {response.status_code}')
                 return response
-        else:
-            print(f'failed {response.status_code}')
-            return response
+        except requests.exceptions.Timeout :
+            print('Timeout ,check your internet!!')
+        except requests.exceptions.ConnectionError:
+            print('Connection Error ,check you connection!!')
             
     elif method.upper() == 'POST':
-        response = requests.post(url ,headers=headers ,json=data)
-        if isinstance(response.json(), dict):
-            return response
-        else:
-            print("response is'nt dict")
+        try:
+            response = requests.post(url ,headers=headers ,json=data,timeout=(3,10))
+            if isinstance(response.json(), dict):
+                return response
+            else:
+                print("response is'nt dict")
+        except requests.exceptions.Timeout :
+            print('Timeout ,check your internet!!')
+        except requests.exceptions.ConnectionError:
+            print('Connection Error ,check you connection!!')
+            
     elif method.upper() == 'PUT' :
-        response = requests.put(url, headers=headers ,json=data)
-        if isinstance(response.json(), dict):
-            return response
-        else:
-            print("response is'nt dict")
+        try:
+            response = requests.put(url, headers=headers ,json=data,timeout=(3,10))
+            if isinstance(response.json(), dict):
+                return response
+            else:
+                print("response is'nt dict")
+        except requests.exceptions.Timeout:
+            print('Timeout ,check your internet!!')
+        except reqeusts.exceptions.ConnectionError:
+            print("connection error ")
+            
+
     elif method.upper() == 'PATCH':
-        response = requests.patch(url, headers=headers ,json=data)
-        if isinstance(response.json(), dict):
-            return response
-        else:
-            print("response is'nt dict")
+        try:
+            response = requests.patch(url, headers=headers ,json=data,timeout=(3,10))
+            if isinstance(response.json(), dict):
+                return response
+            else:
+                print("response is'nt dict")
+        except requests.exceptions.Timeout:
+            print("Timeout , check you internet!!")
+        except requests.exceptions.ConnectionError:
+            print("connection error !!")
+            
     elif method.upper() == 'DELETE':
-        response = requests.delete(url, headers=headers)
-        if isinstance(response.json(), dict):
-            return response
-        else:
-            print("response is'nt dict")
+        try:
+            response = requests.delete(url, headers=headers,timeout=(3,10))
+            if isinstance(response.json(), dict):
+                return response
+            else:
+                print("response is'nt dict")
+        except requests.exceptions.Timeout:
+            print('Timeout ,check your internet')
+        except requests.exceptions.ConnectionError:
+            print("connection error!!")
     else:
         print('ada kesalahan')
