@@ -1,17 +1,19 @@
 import requests
-from configs.config import BASE_URL
+from requests import Response
+from configs.settings import base_url
+from typing import Optional, Any
 
-def api_requests(
-        method,
-        endpoint,
-        headers=None,
-        params=None,
-        data=None,
-        json_data=None,
-        files=None
-):
+def api_request(
+        method: str,
+        endpoint: str,
+        headers: Optional[dict[str, str]] = None,
+        params: Optional[dict[str, Any]] = None, # Titik dua sudah dihapus
+        data: Optional[dict[str, Any]] = None,
+        json_data: Optional[dict[str, Any]] = None,
+        files: Any = None
+) -> Response:
     """Helper untuk membuat request API"""
-    url = f"{BASE_URL}/{endpoint}"
+    url = f"{base_url}{endpoint}"
     
     response = requests.request(
         method=method,
@@ -19,25 +21,28 @@ def api_requests(
         headers=headers or {},
         params=params or {},
         data=data,
-        json=json_data
-        files=files
+        json=json_data, # Tambah koma
+        files=files,    # Tambah koma
+        timeout=5
     )
-    
-    # Return raw response untuk divalidasi oleh test case
     return response
 
-# Atau function yang lebih spesifik
-def requests_get(endpoint,headers=None, params=None):
-    return api_requests('GET', endpoint, headers=headers, params=params)
+def method_get(endpoint: str, headers: Optional[dict[str, str]] = None, params: Optional[dict[str, Any]] = None) -> Response:
+    return api_request('GET', endpoint=endpoint, headers=headers, params=params)
 
-def requests_post(endpoint,json_data,data=None ,files=None, headers=None):
-    return api_requests('POST', endpoint, headers=headers, json_data=json_data ,data=None ,files=None)
+def method_post(endpoint: str,
+                json_data: Optional[dict[str, Any]] = None,
+                data: Optional[dict[str, Any]] = None,
+                files: Optional[dict[str, Any]] = None,
+                headers: Optional[dict[str, str]] = None
+                ) -> Response:
+    return api_request('POST', endpoint, headers=headers, json_data=json_data, data=data, files=files)
 
-def requests_put(endpoint, headers=None ,json_data):
-    return api_requests('PUT', endpoint ,headers=headers ,json_data=json_data )
+def method_put(endpoint: str, headers: Optional[dict[str, str]] = None, json_data: Optional[dict[str, Any]] = None) -> Response:
+    return api_request('PUT', endpoint, headers=headers, json_data=json_data)
 
-def requests_patch(endpoint, headers=None ,json_data):
-    return api_requests('PATCH', endpoint ,headers=headers ,json_data=json_data)
+def method_patch(endpoint: str, headers: Optional[dict[str, str]] = None, json_data: Optional[dict[str, Any]] = None) -> Response:
+    return api_request('PATCH', endpoint, headers=headers, json_data=json_data)
 
-def requests_delete(endpoint ,headers):
-    return api_requests('DELETE',endpoint ,headers=headers)
+def method_delete(endpoint: str, headers: Optional[dict[str, str]] = None) -> Response:
+    return api_request('DELETE', endpoint, headers=headers)
