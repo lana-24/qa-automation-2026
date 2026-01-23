@@ -13,8 +13,8 @@ def api_request(
         files: Any = None
 ) -> Response:
     """Helper untuk membuat request API"""
-    url = f"{base_url}{endpoint}"
-    
+    url = f'{base_url}{endpoint}'
+
     response = requests.request(
         method=method,
         url=url,
@@ -23,7 +23,7 @@ def api_request(
         data=data,
         json=json_data, # Tambah koma
         files=files,    # Tambah koma
-        timeout=5
+        timeout=3
     )
     return response
 
