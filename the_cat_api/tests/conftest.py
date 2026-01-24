@@ -37,3 +37,22 @@ def images():
     image_path = Path(__file__).parent / 'images.jpeg'
     with open(image_path, 'rb') as f:
         yield f
+
+
+
+def pytest_html_results_table_header(cells):
+    # Di versi baru, 'items' diganti 'cells'
+    cells.insert(2, "<th>Description</th>")
+
+def pytest_html_results_table_row(report, cells):
+    # Mengambil deskripsi yang kita simpan di objek report
+    description = getattr(report, "description", "")
+    cells.insert(2, f"<td>{description}</td>")
+
+@pytest.hookimpl(hookwrapper=True)
+def pytest_runtest_makereport(item, call):
+    outcome = yield
+    report = outcome.get_result()
+    # Mengambil docstring dari fungsi test
+    doc = item.function.__doc__
+    report.description = str(doc) if doc else ""
