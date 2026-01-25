@@ -162,21 +162,26 @@ def test_get_images_breeds(headers_token,get_id):
     response = method_get(endpoint= f'/images/{get_id}/breeds',headers=headers_token)
     assert response.status_code == 200 ,f'not 200 but {response.status_code}, response:\n{response.text}'
     assert 'breed_id' in response.json() or response.json() == []
-'''
+
 def test_delete_images_breeds(headers_token,get_id):
-    
+    '''
     TC: P-IMAGES-08
     Delete my image breeds
     Endpoint: delete /images/{image_id}/breeds/{breed_id}
     Expected:
-    - status code 200
+    - status code 204
     - response body type object
     - response body field 'breeds_id'
-    STATUS : SKIP
+    '''
+    response_body = {
+        "breed_id" : "aege"
+ }
+    response = method_post(endpoint= f'/images/{get_id}/breeds',headers=headers_token,json_data = response_body)
+    
     response = method_delete(endpoint= f'/images/{get_id}/breeds/aege',headers=headers_token)
-    assert response.status_code == 200 ,f'not 200 but {response.status_code}, response:\n{response.text}'
+    assert response.status_code == 204 ,f'not 204 but {response.status_code}, response:\n{response.text}'
 
-'''
+
     
 def test_delete_myupload(headers_token,get_id):
     '''
@@ -186,5 +191,6 @@ def test_delete_myupload(headers_token,get_id):
     Expected:
     - status code 200
     '''
+    
     response = method_delete(endpoint= f'/images/{get_id}', headers=headers_token)
     assert response.status_code in [200, 204]
