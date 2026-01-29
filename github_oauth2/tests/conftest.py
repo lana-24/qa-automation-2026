@@ -1,5 +1,6 @@
 import pytest
-from py.xml import html
+from utils.helpers import method_get
+from py.xml import html # type: ignore
 from configs.settings import token_oauth
 
 def parse_docstring(docstring):
@@ -58,11 +59,17 @@ def pytest_runtest_makereport(item, call):
 @pytest.fixture()
 def headers_token():
     return {
-        "Accept" : "application/json",
-        "Authorization" : token_oauth
+        "Accept": "application/vnd.github+json", # Ini WAJIB
+        "X-GitHub-Api-Version": "2022-11-28",     # Tambahkan ini juga
+        "Authorization" : f"Bearer {token_oauth}"
 }
 
 @pytest.fixture()
 def headers():
     return  {"Accept" : "application/json"}
 
+@pytest.fixture()
+def ssh_key(headers_token):
+    res = method_get('/user/keys', headers_token)
+    key_id = res.json()[1]['id']
+    yield key_id
