@@ -13,7 +13,7 @@ scope token :
 """
 
 token_oauth = os.getenv('token')
-base_url = 'https://api.github.com/user'
+base_url = 'https://api.github.com'
 
 def test_token():
     if token_oauth:
