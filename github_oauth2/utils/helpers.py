@@ -3,7 +3,7 @@ import logging
 from requests import Response
 from configs.settings import base_url
 from typing import Optional, Any
-logger = logging.getlogger("SATPOL")
+logger = logging.getLogger("SATPOL")
 
 def api_request(
         method: str,
@@ -47,5 +47,5 @@ def method_put(endpoint: str, headers: Optional[dict[str, str]] = None, json_dat
 def method_patch(endpoint: str, headers: Optional[dict[str, str]] = None, json_data: Optional[dict[str, Any]] = None) -> Response:
     return api_request('PATCH', endpoint, headers=headers, json_data=json_data)
 
-def method_delete(endpoint: str, headers: Optional[dict[str, str]] = None) -> Response:
-    return api_request('DELETE', endpoint, headers=headers)
+def method_delete(endpoint: str, headers: Optional[dict[str, str]] = None, json_data: Optional[dict[str, Any]] = None ) -> Response:
+    return api_request('DELETE', endpoint, headers=headers, json_data=json_data)
