@@ -12,12 +12,12 @@ def user_schema(data: dict,schema_name:
                 ):
     schemas = {
         "user" : {"type" : "object",
-                  "properties" : {"login" : {"type" : "string"},
+                  "properties" : {"login" : {"type" : ["string","null"]},
                                   "id" : {"type" : "integer"},
-                                  "url" : {"type" : "string"},
-                                  "name" : {"type" : "string"},
-                                  "bio" : {"type" : "string"},
-                                  "created_at" : {"type" : "string"}
+                                  "url" : {"type" : ["string","null"]},
+                                  "name" : {"type" : ["string","null"]},
+                                  "bio" : {"type" : ["string","null"]},
+                                  "created_at" : {"type" : ["string","null"]}
                         },
                   "required" : ["login","id","name","created_at"]},
         
@@ -31,22 +31,11 @@ def user_schema(data: dict,schema_name:
                                               }},
                    "required" : ["login","id","name","created_at"]
                    },
-        "hovecard" : {"type" : "object",
-                      "properties" : {"contexts": {"type": "array",
-                                                   "items" : {"properties" : {
-                                                       "message":{"type":"string"},
-                                                       "octicon":{"type":"string"},
-                                                   }
-                                                              },
-                                                   "required":["message","octicon"]
-                                                   }
-                                      }
-                      },
         "list_email" :  {"type" : "array",
-                          "items" : {"properties" : {"email" : {"type" : "string"},
-                                                "verified" : {"type" : "boolean"},
-                                                "primary" : {"type" : "boolean"},
-                                                "visibility" : {"type" : "string"}
+                         "items" : {"properties" : {"email" : {"type": ["string","null"]},
+                                                    "verified" : {"type" : "boolean"},
+                                                    "primary" : {"type" : "boolean"},
+                                                    "visibility" : {"type" : ["string","null"]}
                                               }},
                           "required" : ["email","verified","primary","visibility"]
                           },
@@ -62,10 +51,11 @@ def user_schema(data: dict,schema_name:
                  "required" : ["key","id","title","created_at"]
                  },
         
-        "public_ssh" :  {"type" : "object",
-                         "properties" : {"id" : {"type" : "integer"},
-                                         "key" : {"type" : "string"}
-                                         },
+        "public_ssh" :  {"type" : "array",
+                         "items" : { "properties" : {"id" : {"type" : "integer"},
+                                                     "key" : {"type" : "string"}
+                                                     }
+                                    },
                          "required" : ["id","key"]
                          },
         
