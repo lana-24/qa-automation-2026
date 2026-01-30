@@ -16,8 +16,9 @@ def api_request(
 ) -> Response:
     """Helper untuk membuat request API"""
     url = f'{base_url}{endpoint}'
-
-    response = requests.request(
+    try:
+        logger.info(f'{method} {url}...')
+        response = requests.request(
         method=method,
         url=url,
         headers=headers or {},
@@ -27,7 +28,16 @@ def api_request(
         files=files,    # Tambah koma
         timeout=3
     )
-    return response
+        return response
+    except requests.exceptions.Timeout:
+        logger.error('Timeout!! check your connection!!')
+        raise
+    except requests.exceptions.ConnectionError:
+        logger.error("Connection error, Can't connected!!")
+        raise
+    except Exception as e:
+        logger.error(f'error: {e}')
+        raise 
 
 def method_get(endpoint: str, headers: Optional[dict[str, str]] = None, params: Optional[dict[str, Any]] = None) -> Response:
     return api_request('GET', endpoint=endpoint, headers=headers, params=params)
