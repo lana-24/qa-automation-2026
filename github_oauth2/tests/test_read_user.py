@@ -47,7 +47,7 @@ def test_get_user_id(headers_token,account_id):
     Description: get a user with their id
     Expected: status 200 and type object
     '''
-    logger.info('>>Starting get user{id} profile')
+    logger.info(f'>>Starting get user{account_id} profile')
     endpoint = f'/user/{account_id}'
     res = method_get(endpoint, headers_token)
     logger_error(res, 200)
@@ -59,7 +59,7 @@ def test_get_list_user(headers_token):
     '''
     Test ID: TC-03
     Priority: HIGH
-    Descripton: get list user
+    Description: get list user
     Expected: status 200 and type array
     '''
     logger.info('>>Starting get a list user profile')
@@ -76,7 +76,7 @@ def test_get_list_user(headers_token):
     "deaafrizal",
     "ProgrammerZamanNow"
 ])
-def test_get_user(headers_token, username):
+def test_get_user_by_username(headers_token, username):
     '''
     Test ID: TC-04 
     Priority: HIGH
@@ -157,7 +157,7 @@ def test_public_keys_for_user(headers_token, username):
     logger.info('<<END\n')
 
 '''=====NEGATIVE TEST====='''
-def test_user__without_token():
+def test_user_without_token():
     '''
     Test ID: TC-09
     Priority: HIGH
@@ -251,7 +251,7 @@ def test_delete_email(headers_token):
     Description: delete email
     Expected: status 404
     '''
-    logger.info('>>Starting edit new username ')
+    logger.info('>>Starting delete email ')
     endpoint = '/user/emails'
     email = {"emails" : ["maulmalikib@gmail.com"]}
     res = method_delete(endpoint, headers_token, json_data=email)
